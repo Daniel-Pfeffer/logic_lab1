@@ -1,14 +1,13 @@
+import kotlin.math.sqrt
+
 fun main() {
     val start = 0
-    val end = 9
+    val end = 4
     var x = numberConstraint(start, end) + "&" + rowConstraint(start, end) + "&" + columnConstraint(
         start,
         end
-    ) + "&" + duplicateConstraint(start, end)
-    print(
-        x
-    )
-
+    ) + "&" + duplicateConstraint(start, end) + "&" + subgridConstraint(start, end)
+    print(x)
 }
 
 fun numberConstraint(start: Int, end: Int): String {
@@ -92,8 +91,29 @@ fun duplicateConstraint(start: Int, end: Int): String {
     return "(${o.substring(0, o.length - 1)})"
 }
 
-fun subgridConstraint(start: Int, end: Int) {
-
+fun subgridConstraint(start: Int, end: Int): String {
+    var o = ""
+    val subgridEnd = sqrt(end.toDouble()).toInt()
+    for (n in start until end) {
+        for (outerCnt in 0..subgridEnd step subgridEnd) {
+            for (cnt in 0..subgridEnd step subgridEnd) {
+                var innerN = ""
+                for (r in start + outerCnt until subgridEnd + outerCnt) {
+                    var inner = ""
+                    for (c in start + cnt until subgridEnd + cnt) {
+                        inner += c(r, c, n + 1) + "|"
+                    }
+                    inner = inner.substring(0, inner.length - 1)
+                    innerN += inner
+                    innerN += "|"
+                }
+                innerN = innerN.substring(0, innerN.length - 1)
+                o += "($innerN)"
+                o += "&"
+            }
+        }
+    }
+    return "(${o.substring(0, o.length - 1)})"
 }
 
 fun c(c: Int, r: Int, n: Int): String {
